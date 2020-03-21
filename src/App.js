@@ -12,9 +12,10 @@ class App extends Component {
     this.state = {
       todos
     };
+    this.handleAddTodo = this.handleAddTodo.bind(this);
   }
 
-//Añade a la array de todos el nuevo todo
+  //Añade a la array de todos el nuevo todo
   handleAddTodo(todo) {
     this.setState({
       todos: [...this.state.todos, todo]
@@ -22,16 +23,16 @@ class App extends Component {
   }
 
   //Método filter hace como un for, pero si un método no cumple con la función no lo agrega
-removeTodo(index){
-  if(window.confirm('¿Estás seguro?')){
-  this.setState({
-    todos: this.state.todos.filter((e,i)=> {
-      //si una tarea es distinta al índice que le damos, la va a devolver
-      return i !== index
-    })
-  })
-}
-}
+  removeTodo(index) {
+    if (window.confirm('¿Estás seguro?')) {
+      this.setState({
+        todos: this.state.todos.filter((e, i) => {
+          //si una tarea es distinta al índice que le damos, la va a devolver
+          return i !== index
+        })
+      })
+    }
+  }
 
   render() {
     const todos = this.state.todos.map((todo, i) => {
