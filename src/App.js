@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { todos } from './todos.json';
 import TodoForm from './components/TodoForm';
+import { db } from './config/config';
 
 
 class App extends Component {
@@ -12,9 +13,29 @@ class App extends Component {
     this.state = {
       todos
     };
+    //Añadimos bind para no perder el scope
     this.handleAddTodo = this.handleAddTodo.bind(this);
   }
-
+//componentDidMount para cargar datos desde un punto final remoto
+  componentDidMount(){
+    //Conectamos con la collection de la DB y pedimos que reciba una spanshot de ella
+    db.collection('todos')
+    .get()
+    .then( snapshot => {
+      //creamos array donde guardaremos toda la info
+      const todos = []
+      //Tomamos instantanea de la bd y bucle. Por cada doc que encuentre en la DB que coja su info
+      //y luego se sube la info a la array todos
+      snapshot.forEach( doc => {
+        const data =doc.data()
+        todos.push(data)
+      })
+      //Actualizamos los datos del estado con la nueva info de la array todos
+      this.setState({todos: todos})
+      //console.log(snapshot)
+    })
+    .catch( error => console.log(error))
+  }
   //Añade a la array de todos el nuevo todo
   handleAddTodo(todo) {
     this.setState({
@@ -29,12 +50,15 @@ class App extends Component {
         todos: this.state.todos.filter((e, i) => {
           //si una tarea es distinta al índice que le damos, la va a devolver
           return i !== index
+          
         })
       })
     }
   }
 
+
   render() {
+    //Realiza una iteración devolviendo todos los valores de la DB solicitados
     const todos = this.state.todos.map((todo, i) => {
       return (
         //key={i} asigna un índice por cada iteración realizada por el .map
@@ -65,12 +89,12 @@ class App extends Component {
     return (
       <div className="App">
         <nav className="navbar navbar-dark bg-dark">
-          <a href="" className="text-white">
+          <p href="" className="text-white">
             Tareas
           <span className="badge badge-pill badge-light ml-2">
               {this.state.todos.length}
             </span>
-          </a>
+          </p>
         </nav>
 
         <div className="container">

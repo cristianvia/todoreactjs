@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import 'firebase/firestore';
+import { db } from '../config/config';
 
 class TodoForm extends Component {
     constructor() {
@@ -18,6 +20,16 @@ class TodoForm extends Component {
     handleSubmit(e) {
         //preventDefault evita refrescar la página
         e.preventDefault();
+        db.settings({
+            timestampsInSnapshots: true
+        });
+        const taskRef = db.collection("todos")
+        .add({
+            title: this.state.title,
+            responsible: this.state.responsible,
+            description: this.state.description,
+            priority: this.state.priority
+        });
         this.props.onAddTodo(this.state);
         this.setState({
             title: '',
